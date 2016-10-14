@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import com.cisc181.eNums.eMajor;
+import com.cisc181.Exceptions.PersonException;
 
 public class Student extends Person {
 
@@ -23,7 +24,7 @@ public class Student extends Person {
 	}
 
 	public Student(String FirstName, String MiddleName, String LastName, Date DOB, eMajor Major, String Address,
-			String Phone_number, String Email) {
+			String Phone_number, String Email) throws PersonException {
 		super(FirstName, MiddleName, LastName, DOB, Address, Phone_number, Email);
 		this.StudentID = UUID.randomUUID();
 		this.Major = Major;

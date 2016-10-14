@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.cisc181.Exceptions.PersonException;
+
 /*
  * comment
  */
@@ -46,10 +48,11 @@ public abstract class Person implements java.io.Serializable {
 		return DOB;
 	}
 
-	public void setDOB(Date DOB){
-		this.DOB = DOB;
-		
-		
+	public void setDOB(Date DOB) throws PersonException {
+		if (this.PrintAge() <= 100) {
+			this.DOB = DOB;
+		} else throw new PersonException(this);
+
 	}
 
 	public void setAddress(String newAddress) {
@@ -60,9 +63,12 @@ public abstract class Person implements java.io.Serializable {
 		return address;
 	}
 
-	public void setPhone(String newPhone_number) {
-		phone_number = newPhone_number;
-	
+	public void setPhone(String newPhone_number) throws PersonException {
+		if (bNumberValid(newPhone_number) == true) {
+			phone_number = formatNumber(newPhone_number);
+		} else
+			throw new PersonException(this);
+
 	}
 
 	public String getPhone() {
@@ -88,22 +94,23 @@ public abstract class Person implements java.io.Serializable {
 	 * Constructors Constructor with arguments
 	 */
 
-	public Person(String FirstName, String MiddleName, String LastName,
-			Date DOB, String Address, String Phone_number, String Email)
-	{
+	public Person(String FirstName, String MiddleName, String LastName, Date DOB, String Address, String Phone_number,
+			String Email) throws PersonException {
 		this.FirstName = FirstName;
 		this.MiddleName = MiddleName;
 		this.LastName = LastName;
 		this.setDOB(DOB);
 		this.address = Address;
-		this.setPhone(Phone_number);
+		if (bNumberValid(Phone_number) == true) {
+			this.setPhone(Phone_number);
+		} else
+			throw new PersonException(this);
 		this.email_address = Email;
-		
+
 	}
 
 	public void PrintName() {
-		System.out.println(this.FirstName + ' ' + this.MiddleName + ' '
-				+ this.LastName);
+		System.out.println(this.FirstName + ' ' + this.MiddleName + ' ' + this.LastName);
 	}
 
 	public void PrintDOB() {
@@ -123,16 +130,14 @@ public abstract class Person implements java.io.Serializable {
 
 		// If birth date is greater than todays date (after 2 days adjustment of
 		// leap year) then decrement age one year
-		if ((birthDate.get(Calendar.DAY_OF_YEAR)
-				- today.get(Calendar.DAY_OF_YEAR) > 3)
+		if ((birthDate.get(Calendar.DAY_OF_YEAR) - today.get(Calendar.DAY_OF_YEAR) > 3)
 				|| (birthDate.get(Calendar.MONTH) > today.get(Calendar.MONTH))) {
 			age--;
 
 			// If birth date and todays date are of same month and birth day of
 			// month is greater than todays day of month then decrement age
 		} else if ((birthDate.get(Calendar.MONTH) == today.get(Calendar.MONTH))
-				&& (birthDate.get(Calendar.DAY_OF_MONTH) > today
-						.get(Calendar.DAY_OF_MONTH))) {
+				&& (birthDate.get(Calendar.DAY_OF_MONTH) > today.get(Calendar.DAY_OF_MONTH))) {
 			age--;
 		}
 
@@ -140,5 +145,30 @@ public abstract class Person implements java.io.Serializable {
 
 		return age;
 
+	}
+
+	/**
+	 * Tests that the phone number passed to it is a valid American phone number
+	 * (by format)
+	 * 
+	 * @param newPhone_number
+	 * @return
+	 */
+	public boolean bNumberValid(String newPhone_number) {
+		String regex = "^\\(?([0-9]{3})\\)?[-.\\s]?([0-9]{3})[-.\\s]?([0-9]{4})$";
+		Pattern pattern = Pattern.compile(regex);
+		return pattern.matcher(newPhone_number).matches();
+	}
+	
+	/**
+	 * Formats (valid) American phone numbers to a consistent format (AAA) NNN-NNNN
+	 * @param phoneNumber
+	 * @return
+	 */
+	public String formatNumber(String phoneNumber) {
+		String regex = "^\\(?([0-9]{3})\\)?[-.\\s]?([0-9]{3})[-.\\s]?([0-9]{4})$";
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(phoneNumber);
+		return matcher.replaceFirst("($!) $2-$3");
 	}
 }
