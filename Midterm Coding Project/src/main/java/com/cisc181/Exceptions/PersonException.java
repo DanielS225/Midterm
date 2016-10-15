@@ -8,4 +8,9 @@ public class PersonException extends Exception {
 	public PersonException(Person person) {
 		this.person = person;
 	}
+	
+	public PersonException(Person person, String message) {
+		super(message);
+		this.person = person;
+	}
 }
