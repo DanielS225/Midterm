@@ -10,6 +10,7 @@ public class Student extends Person {
 
 	private eMajor Major;
 	private UUID StudentID;
+	private double GPA;
 
 	public eMajor getMajor() {
 		return this.Major;
