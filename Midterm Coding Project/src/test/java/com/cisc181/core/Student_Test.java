@@ -13,11 +13,11 @@ import com.cisc181.Exceptions.PersonException;
 import com.cisc181.eNums.eMajor;
 
 public class Student_Test {
-	
+
 	static ArrayList<Course> courses = new ArrayList<Course>();
 	static ArrayList<Student> students = new ArrayList<Student>();
 	static ArrayList<Semester> semesters = new ArrayList<Semester>();
-	
+
 	@BeforeClass
 	public static void setup() {
 		Course c1 = new Course("CHEM111", 3);
@@ -34,7 +34,7 @@ public class Student_Test {
 		int count = 1;
 		for (Semester semester : semesters) {
 			for (Course course : courses) {
-				sections.add(new Section(count++, semester, course));
+				sections.add(new Section(count++, semester, course, course.getGradePoints()));
 			}
 		}
 		try {
@@ -61,13 +61,40 @@ public class Student_Test {
 		} catch (PersonException e) {
 
 		}
+		for (Section section : sections) {
+			for (Student student : students) {
+				student.addEnrollment(student.getStudentID(), section.getSectionID(), section.getGradePoints());
+			}
+		}
+		for (Student student : students) {
+			for (Enrollment enrollment : student.getEnrollment()) {
+				enrollment.setGrade(3.0);
+			}
+		}
 	}
 
 	@Test
 	public void test() {
-		assertEquals(students.get(0).getMajor(),eMajor.CHEM);
-		students.get(0).setMajor(eMajor.COMPSCI);// test change of 
-		assertEquals(students.get(0).getMajor(),eMajor.COMPSCI);// major
-		assertEquals(1,1);
+		assertEquals(students.get(0).getMajor(), eMajor.CHEM);
+		students.get(0).setMajor(eMajor.COMPSCI);// test change of
+		assertEquals(students.get(0).getMajor(), eMajor.COMPSCI);// major
+
+		for (Student student : students) {
+			int credits = 0;
+			double grade = 0;
+			int count = 0;
+			for (Enrollment enrollment : student.getEnrollment()) {
+				grade += enrollment.getGrade();
+				credits += enrollment.getCredits();
+				count++;
+			}
+			grade /= count;
+			student.setGPA(
+					((student.getGPA() * student.getCredits()) + grade * credits) / (student.getCredits() + credits));
+			student.setCredits(student.getCredits() + credits);
+		}
+		for (Student student : students) {
+			assertEquals(student.getGPA(), 3.0, 0.0);
+		}
 	}
 }

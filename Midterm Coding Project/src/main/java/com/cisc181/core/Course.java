@@ -16,4 +16,8 @@ public class Course {
 	public UUID getCourseID() {
 		return this.CourseID;
 	}
+	
+	public int getGradePoints() {
+		return this.GradePoints;
+	}
 }
