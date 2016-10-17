@@ -7,16 +7,20 @@ public class Enrollment {
 	private UUID StudentID;
 	private UUID EnrollmentID;
 	private double grade;
-	private int credits;
+	private int credits;// added for GPA calculation
 
 	private Enrollment() {
 		this.EnrollmentID = UUID.randomUUID();
 	}
 
-	public Enrollment(UUID StudentID, UUID SectionID, int credits) {
+	public Enrollment(UUID StudentID, UUID SectionID) {
 		this();
 		this.StudentID = StudentID;
 		this.SectionID = SectionID;
+	}
+	
+	public Enrollment(UUID StudentID, UUID SectionID, int credits) {
+		this(StudentID, SectionID);
 		this.credits = credits;
 	}
 	

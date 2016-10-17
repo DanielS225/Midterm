@@ -20,9 +20,9 @@ public class Student_Test {
 
 	@BeforeClass
 	public static void setup() {
-		Course c1 = new Course("CHEM111", 3);
-		Course c2 = new Course("CHEG112", 3);
-		Course c3 = new Course("CISC106", 3);
+		Course c1 = new Course("CHEM111", 3, eMajor.CHEG);
+		Course c2 = new Course("CHEG112", 3, eMajor.CHEG);
+		Course c3 = new Course("CISC106", 3, eMajor.CHEG);
 		courses.add(c1);
 		courses.add(c2);
 		courses.add(c3);
